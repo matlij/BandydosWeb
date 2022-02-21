@@ -1,0 +1,47 @@
+﻿@page "/fetchdata"
+
+<PageTitle>Aktiviteter</PageTitle>
+
+@using BandydosWeb.Data
+@using SportPlanner.ModelsDto
+@inject EventService EventService
+
+<h1>Aktiviteter</h1>
+
+<p>Kommande aktiviteter.</p>
+
+@if (events == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Aktivitet</th>
+                <th>Temp. (F)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in events)
+            {
+                <tr>
+                    <td>@item.Date.ToShortDateString()</td>
+                    <td>@item.EventType</td>
+                    <td>@string.Join(", ", item.Users.Select(u => u.UserName))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<EventDto> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetEventsAsync();
+    }
+}
