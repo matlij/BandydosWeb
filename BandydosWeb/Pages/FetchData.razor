@@ -19,29 +19,24 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>På/av</th>
                 <th>Datum</th>
                 <th>Aktivitet</th>
-                <th>Temp. (F)</th>
+                <th>Närvaro</th>
+                <th>Plats</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in events)
             {
                 <tr>
-                    <td>@item.Date.ToShortDateString()</td>
+                    <td><input type="checkbox" disabled=@isBusy checked=item.UserIsAttending @onchange="e => SwitchUserAttending(item)"/></td>
+                    <td>@item.Date</td>
                     <td>@item.EventType</td>
-                    <td>@string.Join(", ", item.Users.Select(u => u.UserName))</td>
+                    <td>@item.Attending av @item.Invited</td>
+                    <td>@item.Address.FullAddress</td>
                 </tr>
             }
         </tbody>
     </table>
-}
-
-@code {
-    private IEnumerable<EventDto> events;
-
-    protected override async Task OnInitializedAsync()
-    {
-        events = await EventService.GetEventsAsync();
-    }
 }
